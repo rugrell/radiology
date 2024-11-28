@@ -99,10 +99,10 @@ if uploaded_file:
 
 nlp = spacy.load("en_core_web_sm")
 
-def find_errors(generated,ground_truth):
-    gen_doc = nlp(generated)
+def find_errors(generated_report,ground_truth):
+    gen_doc = nlp(generated_report)
     truth_doc = nlp(ground_truth)
-    return [(ent.text, "Missed") for ent in truth_doc.ents if ent.text not in generated]
+    return [(ent.text, "Missed") for ent in truth_doc.ents if ent.text not in generated_report]
 
 errors = find_errors(generated_report,ground_truth)
 st.write("Identified Errors:", errors)
