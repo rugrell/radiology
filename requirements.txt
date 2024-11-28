@@ -5,4 +5,5 @@ google-generativeai
 PyPDF2
 pandas
 pdfplumber
-
+spacy
+scikit-learn

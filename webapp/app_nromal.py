@@ -4,6 +4,9 @@ import os
 import google.generativeai as genai
 from difflib import unified_diff
 from dotenv import load_dotenv
+import spacy
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 # Load environment variables
 load_dotenv()
@@ -93,3 +96,13 @@ if uploaded_file:
         # Generate and display the comparison as plain text
         comparison_text = generate_comparison_text(generated_report, ground_truth)
         st.text_area("Comparison", value=comparison_text, height=300)
+
+nlp = spacy.load("en_core_web_sm")
+
+def find_errors(generated,ground_truth):
+    gen_doc = nlp(generated)
+    truth_doc = nlp(ground_truth)
+    return [(ent.text, "Missed") for ent in truth_doc.ents if ent.text not in generated]
+
+errors = find_errors(generated_report,ground_truth)
+st.write("Identified Errors:", errors)
