@@ -5,6 +5,9 @@ import google.generativeai as genai
 from PIL import Image
 from dotenv import load_dotenv
 load_dotenv()
+import difflib  
+from difflib import SequenceMatcher
+from difflib import HtmlDiff
 
 #Configure Google Gemini-Pro AI Model
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
@@ -61,10 +64,26 @@ st.subheader("An App to help with Radiology Analysis using AI")
 
 uploaded_file = st.file_uploader("Upload a Radiology Report (PDF or Text)", type=["pdf","text"]) 
 
+
 if uploaded_file:
     report_text = extract_text_from_file(uploaded_file)
     if report_text:
         st.text_area("Extracted Report", value=report_text, height=300)
+
+#submit = st.button("Generate Analysis")
+
+def generate_comparison_html(generated_report, ground_truth):
+    differ = HtmlDiff()
+    return differ.make_file(ground_truth.splitlines(), generated_report.splitlines(),context=True)
+
+generated_report = "Patient has a normal chest X-ray. No abnormalities detected."
+ground_truth = "Patient has a normal chest X-ray. No fractures or lesions."
+
+comparison_html = generate_comparison_html(generated_report,ground_truth)
+st.markdown(comparison_html, unsafe_allow_html=True)
+
+
+
 
 
 
