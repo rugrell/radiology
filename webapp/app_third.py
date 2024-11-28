@@ -114,18 +114,42 @@ st.metric("BLEU SCORE", f"{bleu_score:.2f}")
 
 import requests
 
-def query_google_gemini(api_key, report, ground_truth):
+def query_google_gemini(api_key, generated_report, ground_truth):
     url = "https://google-gemini-api.example.com/v1/evaluate"
     payload = {
-        "generated_report": report,
+        "generated_report": generated_report,
         "ground_truth": ground_truth
     }
-
-    headers = { "Autherization: f Bearer {api_key}"}
+    headers = { "Authorization": f"Bearer {api_key}"}
     response = requests.post(url, json=payload, headers=headers)
-    return response.json
+    return response.json()
 
 api_key = "AIzaSyA-Ozwm0-lE7hlfTOpwbEfc_kyOS4XCcOM"
-gemini_reposne = query_google_gemini(api_key,generated_report,ground_truth)
+gemini_reposne = query_google_gemini(api_key, generated_report, ground_truth)
 st.write("Gemini Evaluation Response:" ,gemini_reposne)
 
+
+# ########################################################3
+# st.sidebar.title("Radiology Report Evaluation")
+
+# uploaded_report = st.sidebar.file_uploader("Upload AI-Generated Report")
+# ground_truth_report = st.sidebar.text_area("Paste Ground Truth Report")
+
+# if uploaded_report and ground_truth_report:
+#     generated_text = extract_text_from_file(uploaded_report)
+#     st.write("Generated Report", generated_text)
+#     st.write("Ground Truth Report", ground_truth_report)
+
+#     # Compare Reports
+#     differences = compare_reports(generated_text, ground_truth_report)
+#     st.write("Comparison Results:", differences)
+
+#     # Display Metrics
+#     bleu_score = calculate_bleu(generated_text, ground_truth_report)
+#     st.metric("BLEU Score", f"{bleu_score:.2f}")
+
+#     # Google Gemini Integration
+#     gemini_results = query_google_gemini(api_key, generated_text, ground_truth_report)
+#     st.write("Gemini Evaluation:", gemini_results)
+#chatGPT : https://chatgpt.com/c/6747f32e-8c6c-8010-81fc-87164dcdfd2f
+# ###################################################
