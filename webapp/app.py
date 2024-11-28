@@ -35,10 +35,18 @@ safety_settings = [
 
 #Initialize the Model
 model = genai.GenerativeModel(
-    model_name="",
+    #model_name="models/gemini-1.5-flash",
+    model_name="gemini-1.5-flash",
     generation_config=generation_config,
     safety_settings=safety_settings
 )
+
+#streamlit page configuration
+
+st.set_page_config(page_title="Radiology", page_icon="🧬", layout="wide")
+st.title("Visualize Radiology Report and Correction 🌡")
+st.subheader("An App to help with Radiology Analysis using AI")
+
 
 
 
