@@ -41,11 +41,32 @@ model = genai.GenerativeModel(
     safety_settings=safety_settings
 )
 
-#streamlit page configuration
+def extract_text_from_file(file):
+    if file.type == "application/pdf":
+        with open_pdf(file) as pdf:
+            return " ".join([page.extract_text() for page in pdf.pages])
+    elif file.type == "text/plain":
+        return file.read().decode("utf-8")
+    else:
+        st.error("Unsupported File !")
+        return None
+        
 
+##########################################################################################
+
+#streamlit page configuration
 st.set_page_config(page_title="Radiology", page_icon="🧬", layout="wide")
 st.title("Visualize Radiology Report and Correction 🌡")
 st.subheader("An App to help with Radiology Analysis using AI")
+
+uploaded_file = st.file_uploader("Upload a Radiology Report (PDF or Text)", type=["pdf","text"]) 
+
+if uploaded_file:
+    report_text = extract_text_from_file(uploaded_file)
+    if report_text:
+        st.text_area("Extracted Report", value=report_text, height=300)
+
+
 
 
 
