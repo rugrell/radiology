@@ -26,15 +26,7 @@ safety_settings = [
     {
         "category": "HARM_CATEGORY_HARASSMENT",
         "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-    },
-    {
-        "category": "HARM_CATEGORY_HARASSMENT",
-        "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-    },
-    {
-        "category": "HARM_CATEGORY_HARASSMENT",
-        "threshold": "BLOCK_MEDIUM_AND_ABOVE"
-    },
+    }
 ]
 
 # Initialize the Google Gemini Model
@@ -43,6 +35,15 @@ model = genai.GenerativeModel(
     generation_config=generation_config,
     safety_settings=safety_settings
 )
+
+# Streamlit page configuration
+st.set_page_config(page_title="Radiology Report Analysis", page_icon="🧬", layout="wide")
+st.title("Visualize Radiology Report and Correction 🌡")
+st.subheader("An App to help with Radiology Analysis using AI")
+
+# Define placeholders for `generated_report` and `ground_truth`
+generated_report = "Patient has a normal chest X-ray. No abnormalities detected."
+ground_truth = "Patient has a normal chest X-ray. No fractures or lesions."
 
 # Function to extract text from uploaded file
 def extract_text_from_file(file):
@@ -74,11 +75,6 @@ def generate_comparison_text(generated_report, ground_truth):
     )
     return "\n".join(diff)
 
-# Streamlit page configuration
-st.set_page_config(page_title="Radiology Report Analysis", page_icon="🧬", layout="wide")
-st.title("Visualize Radiology Report and Correction 🌡")
-st.subheader("An App to help with Radiology Analysis using AI")
-
 # File uploader
 uploaded_file = st.file_uploader("Upload a Radiology Report (PDF or TXT)", type=["pdf", "txt"])
 
@@ -87,22 +83,18 @@ if uploaded_file:
     if report_text:
         st.text_area("Extracted Report", value=report_text, height=300)
         
-        # Placeholder for the AI-generated report
-        generated_report = "Patient has a normal chest X-ray. No abnormalities detected."
-        
-        # Placeholder for the ground truth
-        ground_truth = "Patient has a normal chest X-ray. No fractures or lesions."
-        
         # Generate and display the comparison as plain text
         comparison_text = generate_comparison_text(generated_report, ground_truth)
         st.text_area("Comparison", value=comparison_text, height=300)
 
+# Load Spacy NLP model
 nlp = spacy.load("en_core_web_sm")
 
-def find_errors(generated,ground_truth):
+def find_errors(generated, ground_truth):
     gen_doc = nlp(generated)
     truth_doc = nlp(ground_truth)
     return [(ent.text, "Missed") for ent in truth_doc.ents if ent.text not in generated]
 
-errors = find_errors(generated_report,ground_truth)
+# Identify errors
+errors = find_errors(generated_report, ground_truth)
 st.write("Identified Errors:", errors)
