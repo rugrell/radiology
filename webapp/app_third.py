@@ -108,3 +108,24 @@ def calculate_bleu(generated,ground_truth):
 
 bleu_score = calculate_bleu(generated_report,ground_truth)
 st.metric("BLEU SCORE", f"{bleu_score:.2f}")
+
+
+# GOOGLE GEMINI INTEGRATION
+
+import requests
+
+def query_google_gemini(api_key, report, ground_truth):
+    url = "https://google-gemini-api.example.com/v1/evaluate"
+    payload = {
+        "generated_report": report,
+        "ground_truth": ground_truth
+    }
+
+    headers = { "Autherization: f Bearer {api_key}"}
+    response = requests.post(url, json=payload, headers=headers)
+    return response.json
+
+api_key = "AIzaSyA-Ozwm0-lE7hlfTOpwbEfc_kyOS4XCcOM"
+gemini_reposne = query_google_gemini(api_key,generated_report,ground_truth)
+st.write("Gemini Evaluation Response:" ,gemini_reposne)
+
