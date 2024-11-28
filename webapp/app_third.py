@@ -98,3 +98,13 @@ def find_errors(generated, ground_truth):
 # Identify errors
 errors = find_errors(generated_report, ground_truth)
 st.write("Identified Errors:", errors)
+
+
+# METRICS CALCULATION
+from nltk.translate.bleu_score import sentence_bleu
+
+def calculate_bleu(generated,ground_truth):
+    return sentence_bleu([ground_truth.split()], generated.split())
+
+bleu_score = calculate_bleu(generated_report,ground_truth)
+st.metric("BLEU SCORE", f"{bleu_score:.2f}")
